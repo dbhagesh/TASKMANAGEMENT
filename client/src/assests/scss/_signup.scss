@@ -1,0 +1,13 @@
+.signup-wrapper {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    &-head {
+        font-size: 5rem;
+        font-weight: 600;
+        margin-bottom: 3rem;
+    }
+}

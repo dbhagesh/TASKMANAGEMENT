@@ -1,0 +1,28 @@
+// Variables
+$primary : #40a9ff;
+
+// CSS
+@import "antd/dist/antd.css";
+
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+// Pages
+@import '_homepage';
+@import '_dashboard';
+
+// Components
+@import '_login';
+@import '_signup';
+
+
+html,
+body {
+    font-family: 'Merriweather', serif;
+    height: 100%;
+    background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);
+}
+
+body {
+    margin: 0;
+}

@@ -1,0 +1,29 @@
+.homepage-wrapper {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &-head {
+        margin: 20vh 0 5vh 0;
+        font-size: 5rem;
+        font-weight: 800;
+        text-shadow: 1rem white;
+    }
+
+    &-subhead {
+        height: 100%;
+        font-size: 2rem;
+        color: $primary;
+    }
+
+    &-content {
+        margin: 5vh 0;
+        height: 100%;
+        width: 15%;
+        font-size: 3rem;
+        display: flex;
+        justify-content: space-evenly;
+    }
+}

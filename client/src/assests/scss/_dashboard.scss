@@ -1,0 +1,50 @@
+.dashboard-wrapper {
+    height: 100vh;
+
+    &-content {
+        height: calc(100vh - 68px - 50px);
+
+        &-assigned {
+            background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+            overflow: scroll;
+            overflow-x: hidden;
+            height: calc(100vh - 68px - 50px);
+
+            &-cards {
+                background-image: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
+            }
+        }
+
+        &-doing {
+            height: calc(100vh - 68px - 50px);
+            overflow: scroll;
+            overflow-x: hidden;
+            background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+        }
+
+        &-completed {
+            height: calc(100vh - 68px - 50px);
+            overflow: scroll;
+            overflow-x: hidden;
+            background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+        }
+
+    }
+}
+
+#components-layout-demo-top-side-2 .logo {
+    float: left;
+    width: 120px;
+    height: 31px;
+    margin: 16px 24px 16px 0;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.ant-row-rtl #components-layout-demo-top-side-2 .logo {
+    float: right;
+    margin: 16px 0 16px 24px;
+}
+
+.site-layout-background {
+    background: #fff;
+}
