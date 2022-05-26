@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS users(
 CREATE TABLE IF NOT EXISTS project(
   project_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   project_name VARCHAR(255) NOT NULL,
+  project_description TEXT NOT NULL,
   user_id_FK uuid,
   CONSTRAINT user_id_FK
     FOREIGN KEY(user_id_FK)
