@@ -1,15 +1,15 @@
 -- CREATE DATABASE taskmanagement;
-
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS project;
-DROP TABLE IF EXISTS invitaion;
-DROP TABLE IF EXISTS member;
-DROP TABLE IF EXISTS task;
-DROP TABLE IF EXISTS taskAlloted;
-DROP TABLE IF EXISTS doingTask;
-DROP TABLE IF EXISTS doingTaskAlloted;
-DROP TABLE IF EXISTS completedTask;
-DROP TABLE IF EXISTS completedTaskAlloted;
+-- psql -U postgres -d taskmanagement -a -f database.sql
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS project CASCADE;
+DROP TABLE IF EXISTS invitation CASCADE;
+DROP TABLE IF EXISTS member CASCADE;
+DROP TABLE IF EXISTS task CASCADE;
+DROP TABLE IF EXISTS taskAlloted CASCADE;
+DROP TABLE IF EXISTS doingTask CASCADE;
+DROP TABLE IF EXISTS doingTaskAlloted CASCADE;
+DROP TABLE IF EXISTS completedTask CASCADE;
+DROP TABLE IF EXISTS completedTaskAlloted CASCADE;
 
 -- users table
 CREATE TABLE IF NOT EXISTS users(
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS project(
   project_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   project_name VARCHAR(255) NOT NULL,
   project_description TEXT NOT NULL,
-  user_id_FK uuid,
+  user_id_FK uuid NOT NULL,
   CONSTRAINT user_id_FK
     FOREIGN KEY(user_id_FK)
 	  REFERENCES users(user_id)
@@ -32,14 +32,19 @@ CREATE TABLE IF NOT EXISTS project(
 );
 
 
--- invitaion table
-CREATE TABLE IF NOT EXISTS invitaion(
+-- invitation table
+CREATE TABLE IF NOT EXISTS invitation(
   invitation_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   timestamp timestamp default current_timestamp,
-  user_id_FK uuid,
-  project_id_FK uuid,
-  CONSTRAINT user_id_FK
-    FOREIGN KEY(user_id_FK)
+  invitation_by_user_id_FK uuid NOT NULL,
+  invitation_to_user_id_FK uuid NOT NULL,
+  project_id_FK uuid NOT NULL,
+  CONSTRAINT invitation_by_user_id_FK
+    FOREIGN KEY(invitation_by_user_id_FK)
+	  REFERENCES users(user_id)
+    ON DELETE CASCADE,
+  CONSTRAINT invitation_to_user_id_FK
+    FOREIGN KEY(invitation_to_user_id_FK)
 	  REFERENCES users(user_id)
     ON DELETE CASCADE,
   CONSTRAINT project_id_FK
@@ -51,8 +56,8 @@ CREATE TABLE IF NOT EXISTS invitaion(
 -- project member table
 CREATE TABLE IF NOT EXISTS member(
   member_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id_FK uuid,
-  project_id_FK uuid,
+  user_id_FK uuid NOT NULL,
+  project_id_FK uuid NOT NULL,
   CONSTRAINT user_id_FK
     FOREIGN KEY(user_id_FK)
 	  REFERENCES users(user_id)
@@ -68,7 +73,7 @@ CREATE TABLE IF NOT EXISTS task(
   task_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   task_name VARCHAR(255) NOT NULL,
   task_description TEXT NOT NULL,
-  project_id_FK uuid,
+  project_id_FK uuid NOT NULL,
   CONSTRAINT project_id_FK
     FOREIGN KEY(project_id_FK)
     REFERENCES project(project_id)
@@ -80,7 +85,7 @@ CREATE TABLE IF NOT EXISTS doingTask(
   doingTask_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   doingTask_name VARCHAR(255) NOT NULL,
   doingTask_description TEXT NOT NULL,
-  project_id_FK uuid,
+  project_id_FK uuid NOT NULL,
   CONSTRAINT project_id_FK
     FOREIGN KEY(project_id_FK)
     REFERENCES project(project_id)
@@ -92,7 +97,7 @@ CREATE TABLE IF NOT EXISTS completedTask(
   completedTask_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   completedTask_name VARCHAR(255) NOT NULL,
   completedTask_description TEXT NOT NULL,
-  project_id_FK uuid,
+  project_id_FK uuid NOT NULL,
   CONSTRAINT project_id_FK
     FOREIGN KEY(project_id_FK)
     REFERENCES project(project_id)
@@ -103,8 +108,8 @@ CREATE TABLE IF NOT EXISTS completedTask(
 CREATE TABLE IF NOT EXISTS taskAlloted(
   taskAlloted_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   timestamp timestamp default current_timestamp,
-  user_id_FK uuid, 
-  task_id_FK uuid,
+  user_id_FK uuid NOT NULL, 
+  task_id_FK uuid NOT NULL,
   CONSTRAINT user_id_FK
     FOREIGN KEY(user_id_FK)
 	  REFERENCES users(user_id)
@@ -119,8 +124,8 @@ CREATE TABLE IF NOT EXISTS taskAlloted(
 CREATE TABLE IF NOT EXISTS doingTaskAlloted(
   doingTaskAlloted_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   timestamp timestamp default current_timestamp,
-  user_id_FK uuid, 
-  doingTask_id_FK uuid,
+  user_id_FK uuid NOT NULL, 
+  doingTask_id_FK uuid NOT NULL,
   CONSTRAINT user_id_FK
     FOREIGN KEY(user_id_FK)
 	  REFERENCES users(user_id)
@@ -135,8 +140,8 @@ CREATE TABLE IF NOT EXISTS doingTaskAlloted(
 CREATE TABLE IF NOT EXISTS completedTaskAlloted(
   completedTaskAlloted_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   timestamp timestamp default current_timestamp,
-  user_id_FK uuid, 
-  completedTask_id_FK uuid,
+  user_id_FK uuid NOT NULL, 
+  completedTask_id_FK uuid NOT NULL,
   CONSTRAINT user_id_FK
     FOREIGN KEY(user_id_FK)
 	  REFERENCES users(user_id)

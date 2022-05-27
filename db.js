@@ -15,9 +15,4 @@ const pool = new Pool({
     database: `${process.env.DB_DATABASE}`,
 });
 
-pool.on('connect', () => {
-    console.log('connected to the db');
-});
-
-
 module.exports = pool;

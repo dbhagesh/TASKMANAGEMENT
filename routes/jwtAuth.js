@@ -36,7 +36,6 @@ router.post('/register', validInfo, async (req, res) => {
         // res.json(newUser.rows[0]);
 
         // generate our jwt token
-        console.log("REACHED HERE")
         const token = jwtGenerator(newUser.rows[0].user_id);
 
         res.json({ token });
@@ -87,9 +86,7 @@ router.post('/login', validInfo, async (req, res) => {
 
 router.get('/verify', authorization, async (req, res) => {
     try {
-
         await res.json(true);
-
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server error");
