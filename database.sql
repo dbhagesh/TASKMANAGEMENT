@@ -73,30 +73,8 @@ CREATE TABLE IF NOT EXISTS task(
   task_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   task_name VARCHAR(255) NOT NULL,
   task_description TEXT NOT NULL,
-  project_id_FK uuid NOT NULL,
-  CONSTRAINT project_id_FK
-    FOREIGN KEY(project_id_FK)
-    REFERENCES project(project_id)
-    ON DELETE CASCADE
-);
-
--- doing table and its under which project
-CREATE TABLE IF NOT EXISTS doingTask(
-  doingTask_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  doingTask_name VARCHAR(255) NOT NULL,
-  doingTask_description TEXT NOT NULL,
-  project_id_FK uuid NOT NULL,
-  CONSTRAINT project_id_FK
-    FOREIGN KEY(project_id_FK)
-    REFERENCES project(project_id)
-    ON DELETE CASCADE
-);
-
--- completed table and its under which project
-CREATE TABLE IF NOT EXISTS completedTask(
-  completedTask_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  completedTask_name VARCHAR(255) NOT NULL,
-  completedTask_description TEXT NOT NULL,
+  task_type INT NOT NULL DEFAULT 1,
+  task_priority INT NOT NULL DEFAULT 3,
   project_id_FK uuid NOT NULL,
   CONSTRAINT project_id_FK
     FOREIGN KEY(project_id_FK)
@@ -117,37 +95,5 @@ CREATE TABLE IF NOT EXISTS taskAlloted(
   CONSTRAINT task_id_FK
     FOREIGN KEY(task_id_FK)
     REFERENCES task(task_id)
-    ON DELETE CASCADE
-);
-
--- doingTask allocation
-CREATE TABLE IF NOT EXISTS doingTaskAlloted(
-  doingTaskAlloted_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  timestamp timestamp default current_timestamp,
-  user_id_FK uuid NOT NULL, 
-  doingTask_id_FK uuid NOT NULL,
-  CONSTRAINT user_id_FK
-    FOREIGN KEY(user_id_FK)
-	  REFERENCES users(user_id)
-    ON DELETE CASCADE,
-  CONSTRAINT doingTask_id_FK
-    FOREIGN KEY(doingTask_id_FK)
-    REFERENCES doingTask(doingTask_id)
-    ON DELETE CASCADE
-);
-
--- completedTask allocation
-CREATE TABLE IF NOT EXISTS completedTaskAlloted(
-  completedTaskAlloted_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  timestamp timestamp default current_timestamp,
-  user_id_FK uuid NOT NULL, 
-  completedTask_id_FK uuid NOT NULL,
-  CONSTRAINT user_id_FK
-    FOREIGN KEY(user_id_FK)
-	  REFERENCES users(user_id)
-    ON DELETE CASCADE,
-  CONSTRAINT completedTask_id_FK
-    FOREIGN KEY(completedTask_id_FK)
-    REFERENCES completedTask(completedTask_id)
     ON DELETE CASCADE
 );
