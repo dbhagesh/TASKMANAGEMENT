@@ -15,6 +15,14 @@ $primary : #40a9ff;
 @import '_login';
 @import '_signup';
 
+.fallback-spinner {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
 
 html,
 body {

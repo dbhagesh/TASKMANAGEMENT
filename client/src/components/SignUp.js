@@ -1,16 +1,57 @@
-import React from 'react'
-import { Button, Form, Input } from 'antd';
+import React from 'react';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Button, Form, Input, message } from 'antd';
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const onFinish = (values) => {
-    console.log('Success:', values);
-};
-
-const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+const asyncLocalStorage = {
+    setItem: async function (key, value) {
+        await null;
+        return localStorage.setItem(key, value);
+    },
+    getItem: async function (key) {
+        await null;
+        return localStorage.getItem(key);
+    }
 };
 
 function Signup() {
+
+    let navigate = useNavigate();
+    const onFinish = async (values) => {
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                name: values.username,
+                email: values.Email,
+                password: values.password
+            };
+
+
+            const { data } = await axios.post(
+                `${BASE_URL}/auth/register/`,
+                config
+            );
+            asyncLocalStorage.setItem("TM_token", data.token).then(() => {
+                message.success('Registered and Logged In');
+                navigate("/dashboard", { replace: true });
+            })
+
+        }
+        catch (error) {
+            console.log(error.response.data)
+            message.error(error.response.data);
+        }
+
+    };
+
+    const onFinishFailed = (errorInfo) => {
+        message.error(errorInfo);
+    };
+
     return (
         <div className='signup-wrapper'>
             <div className='signup-wrapper-head'>

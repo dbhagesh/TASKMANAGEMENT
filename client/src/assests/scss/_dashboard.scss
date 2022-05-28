@@ -1,6 +1,23 @@
 .dashboard-wrapper {
     height: 100vh;
 
+    &-header {
+        display: flex;
+
+        &-logo {
+            color: #f56a00;
+            background-color: #fde3cf;
+            align-self: center;
+            margin-right: 1rem;
+        }
+
+        &-username {
+            color: white;
+            font-weight: 800;
+
+        }
+    }
+
     &-content {
         height: calc(100vh - 68px - 50px);
 

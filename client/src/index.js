@@ -7,6 +7,8 @@ import {
   Routes,
   Route
 } from "react-router-dom";
+import { Result, Spin, Button } from 'antd';
+import { useNavigate, Navigate } from "react-router-dom";
 
 const Login = lazy(() => import('./components/Login'))
 const Signup = lazy(() => import('./components/SignUp'))
@@ -15,7 +17,11 @@ const Dashboard = lazy(() => import('./pages/Dashboard'))
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Suspense fallback={"Loadinng"}>
+    <Suspense fallback={
+      <div className="fallback-spinner">
+        <Spin />
+      </div>
+    }>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />} />
@@ -26,9 +32,11 @@ root.render(
           <Route
             path="*"
             element={
-              <main style={{ padding: "1rem" }}>
-                <p>There's nothing here!</p>
-              </main>
+              <Result
+                status="404"
+                title="404"
+                subTitle="Sorry, the page you visited does not exist."
+              />
             }
           />
         </Routes>

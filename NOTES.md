@@ -19,6 +19,16 @@
 ~~15. Fetch Members~~
 ~~16. Allocate task to user~~
 
+# FRONTEND
+~~1. login~~
+~~2. register~~
+3. dashboard segregation
+3. d top bar
+4. d left bar
+5. d center
+6. tasks
+
+
 ## TODO
 # MORE THAN 1 OWNER
 # CHANGE OF OWNER
