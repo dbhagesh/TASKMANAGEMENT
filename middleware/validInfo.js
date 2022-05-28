@@ -66,6 +66,26 @@ module.exports = function (req, res, next) {
             return res.status(400).json("Missing Parameters");
         }
     }
+    else if (req.path == "/fetchTasks") {
+        if (![project_id].every(Boolean)) {
+            return res.status(400).json("Missing Parameters");
+        }
+    }
+    else if (req.path == "/fetchOwnTasks") {
+        if (![project_id].every(Boolean)) {
+            return res.status(400).json("Missing Parameters");
+        }
+    }
+    else if (req.path == "/fetchTaskUsers") {
+        if (![task_id, project_id].every(Boolean)) {
+            return res.status(400).json("Missing Parameters");
+        }
+    }
+    else if (req.path == "/userDetails") {
+        if (![user_id].every(Boolean)) {
+            return res.status(400).json("Missing Parameters");
+        }
+    }
 
     next();
 };

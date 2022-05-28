@@ -1,5 +1,6 @@
 -- CREATE DATABASE taskmanagement;
 -- psql -U postgres -d taskmanagement -a -f database.sql
+-- \i database.sql
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS project CASCADE;
 DROP TABLE IF EXISTS invitation CASCADE;
