@@ -3,7 +3,10 @@ require('dotenv').config();
 
 module.exports = async (req, res, next) => {
     try {
-        const { project_id } = req.body;
+        let { project_id } = req.body;
+        if (!project_id)
+            project_id = req.query.project_id;
+
         const exists =
             await
                 pool.query

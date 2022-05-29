@@ -12,7 +12,7 @@ module.exports = function (req, res, next) {
     function validEmail(userEmail) {
         return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail);
     }
-    console.log(req.path)
+
     if (req.path === "/register/" || req.path === "/register") {
         if (![email, name, password].every(Boolean)) {
             return res.status(400).json("Missing Credentials");
@@ -42,7 +42,7 @@ module.exports = function (req, res, next) {
             return res.status(400).json("Invalid Email");
         }
     }
-    else if (req.path === "/acceptInvite" || req.path === "/rejectInvite" || req.path === "/acceptInvite/" || req.path === "/rejectInvite/") {
+    else if (req.path === "/acceptInvite" || req.path === "/rejectInvite" || req.path === "/acceptInvite/" || req.path === "/rejectInvite/" || req.path === "/undoInvite") {
         if (![invitation_id].every(Boolean)) {
             return res.status(400).json("Missing Parameters");
         }

@@ -1,25 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { Form, Input, message, Modal, Button } from 'antd';
 
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-function CreateProjectModal({ setCreatedProject }) {
-    let navigate = useNavigate();
+function Invite({ setCreatedProject }) {
+
     const [form] = Form.useForm();
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const name = Form.useWatch('name', form);
-    const description = Form.useWatch('description', form);
+    const project_id = Form.useWatch('project_id', form);
+    const user_email = Form.useWatch('user_email', form);
 
     const showModal = () => {
         setVisible(true);
     };
     const handleOk = async () => {
         setConfirmLoading(true);
-        await onFinish({ name, description });
+        await onFinish({ project_id, user_email });
         setConfirmLoading(false);
         setVisible(false);
     };
@@ -33,8 +32,8 @@ function CreateProjectModal({ setCreatedProject }) {
     const onFinish = async (values) => {
         try {
             const body = {
-                project_name: values.name,
-                project_description: values.description
+                project_id: values.project_id,
+                user_email: values.user_email
             };
             const headers = {
                 headers: {
@@ -43,13 +42,12 @@ function CreateProjectModal({ setCreatedProject }) {
                 }
             };
             const { data } = await axios.post(
-                `${BASE_URL}/dashboard/createProject`,
+                `${BASE_URL}/dashboard/invite`,
                 body,
                 headers
             );
 
-            message.success('Project Created');
-            setCreatedProject(true);
+            message.success('Invited..');
             form.resetFields();
 
         }
@@ -67,7 +65,7 @@ function CreateProjectModal({ setCreatedProject }) {
     return (
         <>
             <Button type="primary" onClick={showModal}>
-                Create Project
+                Invite
             </Button>
             <Modal
                 title="Create Project"
@@ -92,12 +90,12 @@ function CreateProjectModal({ setCreatedProject }) {
                     autoComplete="off"
                 >
                     <Form.Item
-                        label="Name"
-                        name="name"
+                        label="Project ID"
+                        name="project_id"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your project name!',
+                                message: 'Please input your project ID!',
                             },
                         ]}
                     >
@@ -105,24 +103,16 @@ function CreateProjectModal({ setCreatedProject }) {
                     </Form.Item>
 
                     <Form.Item
-                        name="description"
-                        label="Description"
+                        name="user_email"
+                        label="User Email"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input description',
+                                message: 'Please input email of user to Invite',
                             },
                         ]}
                     >
-                        <Input.TextArea showCount maxLength={400} />
-                    </Form.Item>
-
-                    <Form.Item
-                        wrapperCol={{
-                            offset: 8,
-                            span: 16,
-                        }}
-                    >
+                        <Input />
                     </Form.Item>
                 </Form>
             </Modal>
@@ -130,4 +120,4 @@ function CreateProjectModal({ setCreatedProject }) {
     )
 }
 
-export default CreateProjectModal
+export default Invite

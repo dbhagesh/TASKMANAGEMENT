@@ -8,7 +8,7 @@ const isRegisteredUser = require('../middleware/isRegisteredUser');
 
 router.get('/', authorization, async (req, res) => {
     try {
-        const user = await pool.query("SELECT user_name, user_email FROM users WHERE user_id = $1", [res.locals.user_id]);
+        const user = await pool.query("SELECT user_name, user_email, user_id FROM users WHERE user_id = $1", [res.locals.user_id]);
         res.json(user.rows[0]);
     } catch (err) {
 
@@ -35,12 +35,12 @@ router.post('/createProject', validInfo, authorization, async (req, res) => {
 router.get('/fetchProjects', authorization, async (req, res) => {
     try {
         const projects = await pool.query(
-            "SELECT project_id_FK as project_id FROM member where user_id_FK = $1 UNION SELECT project_id from project WHERE user_id_FK = $1;"
+            "SELECT project_id, project_name, project_description, user_id_FK as user_id FROM project where project_id IN (SELECT project_id_FK as project_id FROM member where user_id_FK = $1 UNION SELECT project_id from project WHERE user_id_FK = $1);"
             , [res.locals.user_id]);
 
         let projects_arr = [];
         for (let key in projects.rows) {
-            projects_arr.push(projects.rows[key].project_id);
+            projects_arr.push(projects.rows[key]);
         }
         res.json(projects_arr);
     } catch (err) {
@@ -90,16 +90,30 @@ router.post('/invite', validInfo, authorization, isOwner, isRegisteredUser, asyn
 
 router.get('/fetchInvites', authorization, async (req, res) => {
     try {
-        const invitations = await pool.query(
+        const invitationsReceived = await pool.query(
             "SELECT * FROM invitation WHERE invitation_to_user_id_FK = $1;"
             , [res.locals.user_id]);
 
-        let invitations_arr = [];
+        const invitationsSent = await pool.query(
+            "SELECT * FROM invitation WHERE invitation_by_user_id_FK = $1;"
+            , [res.locals.user_id]);
 
-        for (let key in invitations.rows) {
-            invitations_arr.push(invitations.rows[key]);
+        let invitations_arr = [];
+        let invitationsReceived_arr = [];
+        let invitationsSent_arr = [];
+
+
+        for (let key in invitationsReceived.rows) {
+            invitationsReceived_arr.push(invitationsReceived.rows[key]);
         }
+        for (let key in invitationsSent.rows) {
+            invitationsSent_arr.push(invitationsSent.rows[key]);
+        }
+        invitations_arr.push(invitationsReceived_arr)
+        invitations_arr.push(invitationsSent_arr)
+
         res.json(invitations_arr);
+
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server error");
@@ -157,15 +171,38 @@ router.post('/rejectInvite', authorization, validInfo, async (req, res) => {
     }
 })
 
-router.get('/fetchMembers', validInfo, authorization, isMember, async (req, res) => {
+router.post('/undoInvite', authorization, validInfo, async (req, res) => {
     try {
-        const { project_id } = req.body;
+        const { invitation_id } = req.body;
+        const invitation = await pool.query(
+            "SELECT * FROM invitation WHERE invitation_id = $1 AND invitation_by_user_id_FK = $2;"
+            , [invitation_id, res.locals.user_id]);
+
+        if (invitation.rows.length == 0) {
+            return res.status(400).send("No such invitation.");
+        }
+
+        const invitation_completed = await pool.query(
+            "DELETE FROM invitation WHERE invitation_id = $1 RETURNING *;"
+            , [invitation_id]);
+
+        res.json(invitation_completed.rows[0]);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+})
+
+router.get('/fetchMembers', authorization, isMember, async (req, res) => {
+    try {
+
+        const { project_id } = req.query;
         const members = await pool.query(
-            "SELECT user_id_FK, user_name, user_email FROM member INNER JOIN users ON user_id_Fk = user_id WHERE project_id_FK = $1;"
+            "SELECT user_id, user_name, user_email FROM member INNER JOIN users ON user_id_Fk = user_id WHERE project_id_FK = $1;"
             , [project_id]);
 
         let members_arr = [];
-
         for (let key in members.rows) {
             members_arr.push(members.rows[key]);
         }
@@ -277,9 +314,9 @@ router.post('/allocate', validInfo, authorization, isOwner, async (req, res) => 
 })
 
 
-router.get('/fetchTasks', validInfo, authorization, isMember, async (req, res) => {
+router.get('/fetchTasks', authorization, isMember, async (req, res) => {
     try {
-        const { project_id } = req.body;
+        const { project_id } = req.query;
         const tasks = await pool.query(
             "SELECT * FROM task WHERE project_id_FK = $1;"
             , [project_id]);

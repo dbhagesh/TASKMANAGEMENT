@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { Form, Input, message, Modal, Button } from 'antd';
 
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-function CreateProjectModal({ setCreatedProject }) {
-    let navigate = useNavigate();
+function TaskOptions({ setTaskRender, project }) {
     const [form] = Form.useForm();
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -33,8 +31,9 @@ function CreateProjectModal({ setCreatedProject }) {
     const onFinish = async (values) => {
         try {
             const body = {
-                project_name: values.name,
-                project_description: values.description
+                task_name: values.name,
+                task_description: values.description,
+                project_id: project['project_id']
             };
             const headers = {
                 headers: {
@@ -43,13 +42,13 @@ function CreateProjectModal({ setCreatedProject }) {
                 }
             };
             const { data } = await axios.post(
-                `${BASE_URL}/dashboard/createProject`,
+                `${BASE_URL}/dashboard/createTask`,
                 body,
                 headers
             );
 
-            message.success('Project Created');
-            setCreatedProject(true);
+            message.success('Task Created');
+            setTaskRender(true);
             form.resetFields();
 
         }
@@ -67,10 +66,10 @@ function CreateProjectModal({ setCreatedProject }) {
     return (
         <>
             <Button type="primary" onClick={showModal}>
-                Create Project
+                Create Task
             </Button>
             <Modal
-                title="Create Project"
+                title="Create Task"
                 visible={visible}
                 onOk={handleOk}
                 confirmLoading={confirmLoading}
@@ -97,7 +96,7 @@ function CreateProjectModal({ setCreatedProject }) {
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your project name!',
+                                message: 'Please input your task name!',
                             },
                         ]}
                     >
@@ -130,4 +129,4 @@ function CreateProjectModal({ setCreatedProject }) {
     )
 }
 
-export default CreateProjectModal
+export default TaskOptions

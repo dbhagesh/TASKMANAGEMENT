@@ -22,12 +22,13 @@
 # FRONTEND
 ~~1. login~~
 ~~2. register~~
-3. dashboard segregation
-3. d top bar
-4. d left bar
-5. d center
+~~3. dashboard segregation~~
+~~3. d top bar~~
+~~4. d left bar~~
+~~5. d center~~
 6. tasks
-
+7. user edit
+8. some styling
 
 ## TODO
 # MORE THAN 1 OWNER

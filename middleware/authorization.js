@@ -11,6 +11,7 @@ module.exports = (req, res, next) => {
 
         const payload = jwt.verify(jwtToken[1], process.env.JWT_SECRET);
         res.locals.user_id = payload.user;
+
         next();
 
     } catch (err) {
