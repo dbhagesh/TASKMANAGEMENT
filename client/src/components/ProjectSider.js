@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { message, Menu, Layout } from 'antd';
 import axios from "axios";
-
+import { Empty } from 'antd';
 const { Sider } = Layout;
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -50,21 +50,34 @@ function ProjectSider({ setProject, CreatedProject }) {
 
     return (
         <Sider width={200} className="site-layout-background">
-            <Menu
-                mode="inline"
-                // defaultSelectedKeys={['1']}
-                // defaultOpenKeys={['1']}
-                style={{
+            {(Projects && Projects.length == 0) ?
+                <div style={{
                     height: '100%',
                     borderRight: 0,
                     overflow: 'scroll',
                     overflowX: 'hidden',
-                }}
-                items={items2}
-                onClick={(e) => {
-                    setProject(Projects[e.key - 1]);
-                }}
-            />
+                    backgroundColor: 'white',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }} >
+                    <Empty />
+                </div>
+                :
+                <Menu
+                    mode="inline"
+                    style={{
+                        height: '100%',
+                        borderRight: 0,
+                        overflow: 'scroll',
+                        overflowX: 'hidden',
+                    }}
+                    items={items2}
+                    onClick={(e) => {
+                        setProject(Projects[e.key - 1]);
+                    }}
+                />
+            }
         </Sider>
     )
 }

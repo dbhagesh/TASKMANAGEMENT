@@ -56,7 +56,7 @@ function ViewMembersModal({ project }) {
             );
 
             setRows(data)
-            message.success('Members Fetched');
+            // message.success('Members Fetched');
 
         }
         catch (error) {

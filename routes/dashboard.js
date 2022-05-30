@@ -109,7 +109,15 @@ router.get('/fetchInvites', authorization, async (req, res) => {
         for (let key in invitationsSent.rows) {
             invitationsSent_arr.push(invitationsSent.rows[key]);
         }
+
+        invitationsReceived_arr.sort(function (x, y) {
+            return ((new Date(x['timestamp'])) - (new Date(y['timestamp'])));
+        })
+        invitationsSent_arr.sort(function (x, y) {
+            return ((new Date(x['timestamp'])) - (new Date(y['timestamp'])));
+        })
         invitations_arr.push(invitationsReceived_arr)
+
         invitations_arr.push(invitationsSent_arr)
 
         res.json(invitations_arr);
@@ -256,7 +264,7 @@ router.put('/modifyTask', validInfo, authorization, async (req, res) => {
         if (old_task.rows.length == 0) {
             return res.status(404).send('No such task exists');
         }
-        if (task_type < 1 || task_type > 3) {
+        if (!(task_type == 1 || task_type == 2 || task_type == 3)) {
             return res.status(404).send('No such task type exists');
         }
 
@@ -271,6 +279,7 @@ router.put('/modifyTask', validInfo, authorization, async (req, res) => {
             "UPDATE task SET task_name = $1, task_description = $2, task_priority = $3, task_type = $4  WHERE task_id = $5  RETURNING *"
             , [task_name, task_description, task_priority, task_type, task_id]);
 
+        console.log(task.rows[0])
         res.json(task.rows[0]);
 
     } catch (err) {
@@ -318,8 +327,15 @@ router.get('/fetchTasks', authorization, isMember, async (req, res) => {
     try {
         const { project_id } = req.query;
         const tasks = await pool.query(
-            "SELECT * FROM task WHERE project_id_FK = $1;"
+            `WITH cte_taskcount AS
+                (SELECT task_id_fk as task_id, count(*) as task_users_count FROM taskAlloted WHERE task_id_fk IN (SELECT task_id FROM task WHERE project_id_FK = $1) GROUP BY task_id_fk)
+                SELECT * from task INNER JOIN cte_taskcount USING (task_id)
+                UNION
+                SELECT *, 0 as task_users_count FROM task WHERE project_id_FK = $1 AND task_id NOT IN (SELECT task_id_fk as task_id FROM taskAlloted)
+                ;
+        `
             , [project_id]);
+
 
         let tasks_A = [],
             tasks_B = [],
@@ -339,6 +355,16 @@ router.get('/fetchTasks', authorization, isMember, async (req, res) => {
             }
         }
 
+        tasks_A.sort(function (x, y) {
+            return -(((x['task_priority'])) - ((y['task_priority'])));
+        })
+        tasks_B.sort(function (x, y) {
+            return -(((x['task_priority'])) - ((y['task_priority'])));
+        })
+        tasks_C.sort(function (x, y) {
+            return -(((x['task_priority'])) - ((y['task_priority'])));
+        })
+
         tasks_arr.push(tasks_A);
         tasks_arr.push(tasks_B);
         tasks_arr.push(tasks_C);
@@ -352,11 +378,15 @@ router.get('/fetchTasks', authorization, isMember, async (req, res) => {
 })
 
 
-router.get('/fetchOwnTasks', validInfo, authorization, isMember, async (req, res) => {
+router.get('/fetchOwnTasks', authorization, isMember, async (req, res) => {
     try {
-        const { project_id } = req.body;
+        const { project_id } = req.query;
         const tasks = await pool.query(
-            "SELECT * FROM task WHERE project_id_FK = $1 AND task_id IN (SELECT task_id_FK FROM taskAlloted WHERE user_id_FK = $2);"
+            `WITH cte_taskcount AS
+                (SELECT task_id_fk as task_id, count(*) as task_users_count FROM taskAlloted WHERE task_id_fk IN (SELECT task_id FROM task WHERE project_id_FK = $1 AND task_id IN (SELECT task_id_fk FROM taskAlloted WHERE user_id_fk = $2) ) GROUP BY task_id_fk)
+                SELECT * from task INNER JOIN cte_taskcount USING (task_id)
+                ;
+            `
             , [project_id, res.locals.user_id]);
 
         let tasks_A = [],
@@ -377,6 +407,16 @@ router.get('/fetchOwnTasks', validInfo, authorization, isMember, async (req, res
             }
         }
 
+        tasks_A.sort(function (x, y) {
+            return -(((x['task_priority'])) - ((y['task_priority'])));
+        })
+        tasks_B.sort(function (x, y) {
+            return -(((x['task_priority'])) - ((y['task_priority'])));
+        })
+        tasks_C.sort(function (x, y) {
+            return -(((x['task_priority'])) - ((y['task_priority'])));
+        })
+
         tasks_arr.push(tasks_A);
         tasks_arr.push(tasks_B);
         tasks_arr.push(tasks_C);
@@ -389,9 +429,9 @@ router.get('/fetchOwnTasks', validInfo, authorization, isMember, async (req, res
     }
 })
 
-router.get('/fetchTaskUsers', validInfo, authorization, isMember, async (req, res) => {
+router.get('/fetchTaskUsers', authorization, isMember, async (req, res) => {
     try {
-        const { task_id } = req.body;
+        const { task_id } = req.query;
         const users = await pool.query(
             "SELECT * FROM taskAlloted WHERE task_id_FK = $1;"
             , [task_id]);

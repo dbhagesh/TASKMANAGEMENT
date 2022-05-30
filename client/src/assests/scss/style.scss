@@ -25,6 +25,14 @@ $primary : #40a9ff;
     align-items: center;
 }
 
+.divider {
+    background-color: white;
+}
+
+.badge-display-issue {
+    display: block;
+}
+
 html,
 body {
     font-family: 'Merriweather', serif;

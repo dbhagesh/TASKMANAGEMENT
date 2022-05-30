@@ -85,6 +85,44 @@ router.post('/login', validInfo, async (req, res) => {
     }
 });
 
+
+// Update User Setting
+
+router.put('/updateUser', validInfo, async (req, res) => {
+    try {
+
+        // destructure req.body
+
+        const { user_id, user_name, user_email } = req.body;
+
+        // check if user exists
+        const user = await pool.query("SELECT * FROM users WHERE user_id = $1", [user_id]);
+
+        if (user.rows.length == 0) {
+            return res.status(404).json("No user with this user id");
+        }
+
+        // check if user exists
+        const exists = await pool.query("SELECT * FROM users WHERE user_email = $1 AND user_id != $2", [user_email, user_id]);
+
+        if (exists.rows.length != 0) {
+            return res.status(400).json("User with this email already exists. Try another email.");
+        }
+
+        // enter the new user into the database
+
+        const newUser = await pool.query(
+            "UPDATE users SET user_name = $1, user_email = $2 where user_id = $3 RETURNING user_name, user_email, user_id",
+            [user_name, user_email, user_id]);
+
+        res.json(newUser.rows[0]);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+}
+);
 router.get('/verify', authorization, async (req, res) => {
     try {
         await res.json(true);

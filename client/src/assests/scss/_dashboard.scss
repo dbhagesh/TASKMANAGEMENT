@@ -12,6 +12,7 @@
             background-color: #fde3cf;
             align-self: center;
             margin-right: 1rem;
+            cursor: pointer;
         }
 
         &-username {
@@ -25,13 +26,15 @@
         height: calc(100vh - 68px - 50px);
 
         &-assigned {
-            background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+            // background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
             overflow: scroll;
             overflow-x: hidden;
             height: calc(100vh - 68px - 50px);
 
             &-cards {
+                border-radius: 0.8rem;
                 background-image: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
+                margin-bottom: 1rem;
             }
         }
 
@@ -39,16 +42,21 @@
             height: calc(100vh - 68px - 50px);
             overflow: scroll;
             overflow-x: hidden;
-            background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+            // background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
         }
 
         &-completed {
             height: calc(100vh - 68px - 50px);
             overflow: scroll;
             overflow-x: hidden;
-            background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+            // background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
         }
 
+    }
+
+    &-nocontent {
+        width: 100%;
+        align-self: center;
     }
 }
 
@@ -67,4 +75,34 @@
 
 .site-layout-background {
     background: #fff;
+}
+
+.taskoptions-btn {
+    display: flex;
+    gap: 0.25em;
+
+    &-1 {
+        background-color: #a0d911;
+        color: white;
+        border: #a0d911;
+    }
+
+    &-2 {
+        background-color: #faad14;
+        border: #faad14;
+    }
+
+    &-3 {
+        // background-color: #faad14;
+        // color: white;
+        // border: #faad14;
+    }
+}
+
+.priority {
+    &1 {}
+
+    &2 {}
+
+    &3 {}
 }

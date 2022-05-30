@@ -38,7 +38,7 @@ function ViewNotificationsModal({ setCreatedProject, CreatedProject }) {
             );
 
             setInvitations(data)
-            message.success('Invitations Fetched');
+            // message.success('Invitations Fetched');
 
         }
         catch (error) {

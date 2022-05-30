@@ -6,7 +6,8 @@ module.exports = function (req, res, next) {
         user_email, project_id, // invitation and fetching members
         invitation_id, // invitation accept or reject
         task_id, task_name, task_priority, task_type, task_description, // task creation and modification
-        user_id // allocation of task
+        user_id, // allocation of task
+        user_name
     } = req.body;
 
     function validEmail(userEmail) {
@@ -26,6 +27,14 @@ module.exports = function (req, res, next) {
             return res.status(400).json("Missing Credentials");
         }
         else if (!validEmail(email)) {
+            return res.status(401).json("Invalid Email");
+        }
+    }
+    else if (req.path === "/updateUser/" || req.path === "/updateUser") {
+        if (![user_email, user_name, user_id].every(Boolean)) {
+            return res.status(400).json("Missing Credentials");
+        }
+        else if (!validEmail(user_email)) {
             return res.status(401).json("Invalid Email");
         }
     }
